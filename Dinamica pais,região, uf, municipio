@@ -1,0 +1,35 @@
+UltimoFiltroOuEstado = 
+VAR MunicipioSelecionado = SELECTEDVALUE(DM_GEOGRAFIA[NO_MUNICIPIO], BLANK())
+VAR UfSelecionado = SELECTEDVALUE(DM_GEOGRAFIA[SG_UF], BLANK())
+VAR RegiaoSelecionada = SELECTEDVALUE(DM_GEOGRAFIA[NO_REGIAO], BLANK())
+VAR ContagemMunicipios = COUNTROWS(
+    FILTER(
+        ALLSELECTED(DM_GEOGRAFIA[NO_MUNICIPIO]),
+        NOT(ISBLANK(DM_GEOGRAFIA[NO_MUNICIPIO]))
+    )
+)
+VAR ContagemUfs = COUNTROWS(
+    FILTER(
+        ALLSELECTED(DM_GEOGRAFIA[SG_UF]),
+        NOT(ISBLANK(DM_GEOGRAFIA[SG_UF]))
+    )
+)
+VAR ContagemRegioes = COUNTROWS(
+    FILTER(
+        ALLSELECTED(DM_GEOGRAFIA[NO_REGIAO]),
+        NOT(ISBLANK(DM_GEOGRAFIA[NO_REGIAO]))
+    )
+)
+VAR Resultado = 
+    IF(
+        ContagemMunicipios = 1 && NOT(ISBLANK(MunicipioSelecionado)), MunicipioSelecionado & " / " & UfSelecionado,
+        IF(
+            ContagemUfs = 1 && NOT(ISBLANK(UfSelecionado)), UfSelecionado,
+            IF(
+                ContagemRegioes = 1 && NOT(ISBLANK(RegiaoSelecionada)), RegiaoSelecionada,
+                "BRASIL"
+            )
+        )
+    )
+RETURN 
+    IF(ISBLANK(Resultado), "BRASIL", Resultado)
