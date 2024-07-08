@@ -1,0 +1,24 @@
+let
+  
+    DataInicial = Date.StartOfYear(List.Min(#"Eixo Bimestre visão geral"[Data])),
+    DataFinal = Date.EndOfYear(List.Max(#"Eixo Bimestre visão geral"[Data])),
+    QtdeDias = Duration.Days(DataFinal-DataInicial)+1,
+    ListaDatas = List.Dates(DataInicial, QtdeDias, #duration(1, 0, 0, 0)),
+    #"Convertido para Tabela" = Table.FromList(ListaDatas, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Convertido para Tabela",{{"Column1", type date}}),
+    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado",{{"Column1", "Data"}}),
+    #"Ano Inserido" = Table.AddColumn(#"Colunas Renomeadas", "Ano", each Date.Year([Data]), Int64.Type),
+    #"Mês Inserido" = Table.AddColumn(#"Ano Inserido", "Mês", each Date.Month([Data]), Int64.Type),
+    #"Nome do Mês Inserido" = Table.AddColumn(#"Mês Inserido", "Nome do Mês", each Date.MonthName([Data]), type text),
+    #"Trimestre Inserido" = Table.AddColumn(#"Nome do Mês Inserido", "Trimestre", each Date.QuarterOfYear([Data]), Int64.Type),
+    #"Prefixo Adicionado" = Table.TransformColumns(#"Trimestre Inserido", {{"Trimestre", each "T" & Text.From(_, "pt-BR"), type text}}),
+    #"Coluna Condicional Adicionada" = Table.AddColumn(#"Prefixo Adicionado", "Semestre", each if [Mês] <= 6 then "S1" else "S2"),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Coluna Condicional Adicionada",{{"Semestre", type text}}),
+    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Tipo Alterado1", "Bimestre", each if [Mês] <= 2 then "B1" else if [Mês] <= 4 then "B2" else if [Mês] <= 6 then "B3" else if [Mês] <= 8 then "B4" else if [Mês] <= 10 then "B5" else "B6"),
+    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Coluna Condicional Adicionada1",{{"Bimestre", type text}}),
+    #"Coluna Mesclada Inserida" = Table.AddColumn(#"Tipo Alterado2", "Trimeste-Ano", each Text.Combine({[Trimestre], Text.From([Ano], "pt-BR")}, "-"), type text),
+    #"Coluna Mesclada Inserida1" = Table.AddColumn(#"Coluna Mesclada Inserida", "Semestre-Ano", each Text.Combine({[Semestre], Text.From([Ano], "pt-BR")}, "-"), type text),
+    #"Coluna Mesclada Inserida2" = Table.AddColumn(#"Coluna Mesclada Inserida1", "Bimestre-Ano", each Text.Combine({[Bimestre], Text.From([Ano], "pt-BR")}, "-"), type text) 
+
+in
+  #"Coluna Mesclada Inserida2"
