@@ -1,0 +1,7 @@
+let
+    Fonte = DateTimeZone.SwitchZone(DateTimeZone.ToUtc(DateTimeZone.UtcNow()),-3),
+    #"Convertido para Tabela" = #table(1, {{Fonte}}),
+    #"Colunas Renomeadas" = Table.RenameColumns(#"Convertido para Tabela",{{"Column1", "Data de Atualização"}}),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Colunas Renomeadas",{{"Data de Atualização", type datetime}})
+in
+    #"Tipo Alterado"
