@@ -1,0 +1,49 @@
+ttl Filtros Drill Sistema = 
+    
+    VAR txtTipoSistema = IF( ISFILTERED( 'DM_SISTEMAS'[Desc_Tipo_Sistema] ), " Aplicativo," )
+    VAR txtSituacao = IF( ISFILTERED( 'DM_SITUACAO_SISTEMAS'[DescrSituacao] ), " Situação," )
+    VAR txtArea = IF( ISFILTERED( 'DM_SIGLAS_AREAS'[Area] ), " Área," )
+    VAR txtTipoTecnologia = IF( ISFILTERED( DM_TECNOLIGIA_SISTEMAS[DescrTipoTecnologia] ), " Tecnologia," )
+    VAR txtTecnologia = IF( ISFILTERED( DM_TECNOLIGIA_SISTEMAS[DescrTecnologia] ), " Ferramenta," )
+    VAR txtVersaoSistema = IF( ISFILTERED( 'DM_SISTEMAS'[* Classif_Sistema_versao] ), " Versão Sistema," )
+
+    VAR txts = txtTipoSistema & txtSituacao & txtArea & txtTipoTecnologia & txtTecnologia & txtVersaoSistema
+    
+    VAR txtReverso = 
+        IF(
+            NOT( ISBLANK( txts ) )
+        ,   CONCATENATEX(
+                ADDCOLUMNS(
+                    GENERATESERIES(1, LEN( txts ) )
+                ,   "Index", LEN( txts ) - [Value] + 1
+                )
+            ,   MID( txts, [Index], 1 )
+            )
+        )
+    VAR qtdFiltro = LEN(txtReverso) - LEN( SUBSTITUTE( txtReverso, ",", "") )
+    VAR txtAjuste = SUBSTITUTE( txtReverso, ",", "e ", 2 )
+    VAR txtNormal = 
+        IF(
+            NOT( ISBLANK( txts ) )
+        ,   CONCATENATEX(
+                ADDCOLUMNS(
+                    GENERATESERIES(1, LEN( txtAjuste ) )
+                ,   "Index", LEN( txtAjuste ) - [Value] + 1
+                )
+            ,   MID( txtAjuste, [Index], 1 )
+            )
+        )
+
+    VAR txtFiltro = 
+        SWITCH(
+            TRUE()
+        ,   qtdFiltro > 1, "Visões aplicadas:" & LEFT( txtNormal, LEN( txtNormal ) -1 ) & "."
+        ,   "Visão aplicada:" & LEFT( txtNormal, LEN( txtNormal ) -1 ) & "."
+        )
+
+    RETURN
+        SWITCH(
+            TRUE()
+        ,   ISBLANK( txts ), "Nenhuma visão aplicada."
+        ,   txtFiltro
+        )
