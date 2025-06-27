@@ -1,0 +1,4 @@
+Medida para página de relatório que já considera -3 hora UTC e evita problema de data divergente ao ser atualizado. 
+
+
+Data de Atualização_new = UTCNOW() - TIME(3, 0, 0)
