@@ -1,0 +1,6 @@
+Nome Mascarado = 
+VAR nome = 'Tabela'[NomeCompleto]  -- Substitua 'Tabela'[NomeCompleto] pelo nome da sua coluna
+VAR primeiro_nome = LEFT(nome, FIND(" ", nome & " ") - 1)  -- Pega o primeiro nome, se houver um espaço
+VAR resto_nome = MID(nome, FIND(" ", nome & " ") + 1, LEN(nome))  -- Pega o resto do nome
+VAR nome_mascarado = primeiro_nome & " " & REPT("*", LEN(resto_nome))  -- Mascarando o resto
+RETURN nome_mascarado
