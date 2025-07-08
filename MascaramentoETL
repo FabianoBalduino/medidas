@@ -1,0 +1,107 @@
+Passos para mascarar os valores:
+Abrir o Power Query Editor:
+
+No Power BI Desktop, clique em Transformar Dados para abrir o Power Query Editor.
+
+Selecionar a coluna a ser modificada:
+
+Selecione a coluna que contém os nomes ou os CPFs.
+
+Adicionar uma coluna personalizada:
+
+Clique em Adicionar Coluna no menu superior e depois em Coluna Personalizada.
+
+Escrever a fórmula para mascarar os dados:
+
+Para o nome:
+
+Se você quiser mostrar apenas a primeira letra do nome e substituir o restante por "******", use a fórmula abaixo:
+
+pgsql
+Copiar
+Editar
+Text.Start([Nome], 1) & "******"
+Para o CPF:
+
+Se você quiser mostrar apenas os 4 últimos dígitos do CPF e substituir o restante por "******", use a fórmula abaixo:
+
+pgsql
+Copiar
+Editar
+Text.Start([CPF], 3) & "******"
+Aplicar as alterações:
+
+Após criar a fórmula, clique em OK.
+
+Isso criará uma nova coluna com o valor mascarado.
+
+Substituir a coluna original (opcional):
+
+Se você deseja substituir a coluna original pela coluna mascarada, basta clicar com o botão direito na coluna original e escolher Remover, e depois renomear a coluna recém-criada.
+
+Exemplos:
+Nome: "João Silva" → "J******"
+
+CPF: "123.456.789-10" → "123******-10"
+
+Isso vai garantir que os dados sensíveis sejam mascarados, mostrando apenas uma parte da informação, e o restante será substituído por "******".
+
+
+
+
+
+
+
+
+Dito por si:
+No caso do nome preciso do primeiro nome apenas.
+
+
+Dito pelo ChatGPT:
+Para exibir apenas o primeiro nome e substituir o restante por "******" no Power BI, você pode seguir os mesmos passos, mas com uma modificação na fórmula para pegar apenas o primeiro nome. Aqui está como fazer isso:
+
+Passos para exibir o primeiro nome e mascarar o restante:
+Abrir o Power Query Editor:
+
+No Power BI Desktop, clique em Transformar Dados para abrir o Power Query Editor.
+
+Selecionar a coluna a ser modificada:
+
+Selecione a coluna que contém os nomes completos.
+
+Adicionar uma coluna personalizada:
+
+Clique em Adicionar Coluna no menu superior e depois em Coluna Personalizada.
+
+Escrever a fórmula para pegar o primeiro nome e mascarar o restante:
+
+Para extrair apenas o primeiro nome e mascarar o restante por "******", use a seguinte fórmula na Coluna Personalizada:
+
+pgsql
+Copiar
+Editar
+Text.Start(Text.BeforeDelimiter([Nome], " "), Text.Length(Text.BeforeDelimiter([Nome], " "))) & "******"
+Essa fórmula vai:
+
+Text.BeforeDelimiter([Nome], " "): Extrair o primeiro nome antes do primeiro espaço.
+
+Text.Start(...): Garantir que o primeiro nome inteiro seja pego.
+
+& "": Adicionar "" após o primeiro nome.
+
+Aplicar as alterações:
+
+Após criar a fórmula, clique em OK.
+
+Isso criará uma nova coluna com o primeiro nome seguido de "******".
+
+Substituir a coluna original (opcional):
+
+Se você deseja substituir a coluna original, clique com o botão direito na coluna original e escolha Remover, e depois renomeie a nova coluna criada.
+
+Exemplos:
+Nome: "João Silva Pereira" → "João******"
+
+Nome: "Maria Oliveira" → "Maria******"
+
+Isso vai exibir apenas o primeiro nome e substituir o restante do nome por "******".
